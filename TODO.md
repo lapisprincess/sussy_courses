@@ -1,0 +1,4 @@
+- [ ] get course name and matching description from bulletin
+- [ ] give scores to course descriptions
+- [ ] possibly find ways to get syllabi from certain classes
+- [ ] separate classes by department?

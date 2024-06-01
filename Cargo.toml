@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-lopdf = "0.32.0"
+ureq = "2.9.7"

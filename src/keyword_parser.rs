@@ -38,6 +38,23 @@ pub fn process_keywords(path: String) -> std::io::Result<HashMap<String, u32>> {
     Ok(out)
 }
 
+pub fn tester() {
+    let keywords: HashMap<String, u32> = match process_keywords(
+        String::from("tests/test_keywords.txt")
+    ) {
+        Ok(k) => k,
+        Err(_) => {
+            println!("File not found!");
+            return;
+        }
+    };
+
+    for entry in keywords {
+        let (key, score) = entry;
+        println!("{}: {}", key, score);
+    }
+}
+
 
 /*
 TODO:
