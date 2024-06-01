@@ -7,4 +7,4 @@ This program takes a course catalog and a list of keywords with affiliated score
 then scores courses using the keywords in the course-description.
 
 ### Packages used in this project
-- [ureq](https://crates.io/crates/ureq)
+- [ureq](https://crates.io/crates/ureq): Used for pulling HTML data
