@@ -1,9 +1,15 @@
+use core::str::Split;
+
 use std::fs::File;
 use std::collections::HashMap;
-
 use std::io::prelude::*;
+use std::io::Result;
 
-pub fn process_keywords(path: String) -> std::io::Result<HashMap<String, u32>> {
+
+// Given a path to a list of keywords with affiliated scores
+// (formatted correctly),
+// returns a hashmap of the keywords with corresponding scores
+pub fn process_keywords(path: &str) -> Result<HashMap<String, u32>> {
     let mut file: File = File::open(path)?;
     let mut contents: String = String::new();
     let mut out: HashMap<String, u32> = HashMap::new();
@@ -38,26 +44,24 @@ pub fn process_keywords(path: String) -> std::io::Result<HashMap<String, u32>> {
     Ok(out)
 }
 
-pub fn tester() {
-    let keywords: HashMap<String, u32> = match process_keywords(
-        String::from("tests/test_keywords.txt")
-    ) {
-        Ok(k) => k,
-        Err(_) => {
-            println!("File not found!");
-            return;
+
+// Given a body of text and a hashmap of keywords and scores,
+// returns a score of how often keywords appear in the text
+pub fn score_text(txt: String, word_scores: &HashMap<String, u32>) -> u32 {
+    let mut score: u32 = 0;
+    let mut words: Split<char> = txt.split(' ');
+    let mut word: &str;
+
+    loop {
+        word = match words.next() {
+            Some(res) => res,
+            None => break,
+        };
+
+        for (search_word, search_score) in word_scores {
+            if &word.to_lowercase() == search_word { score += search_score; }
         }
-    };
-
-    for entry in keywords {
-        let (key, score) = entry;
-        println!("{}: {}", key, score);
     }
+
+    score
 }
-
-
-/*
-TODO:
-- make words regex-able
-- make template doc for non-coders
-*/

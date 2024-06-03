@@ -4,7 +4,7 @@ use sussy_courses::keyword_parser;
 #[test]
 fn keywords_accurate() {
     let keywords: HashMap<String, u32> = keyword_parser::process_keywords(
-        String::from("tests/test_keywords.txt")
+        "tests/test_keywords.txt"
     ).unwrap();
 
     assert_eq!(10, *keywords.get("environmentalism").unwrap());

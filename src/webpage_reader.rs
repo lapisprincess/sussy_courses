@@ -1,6 +1,12 @@
 use core::str::Split;
+
 use std::collections::HashMap;
 
+use sussy_courses::keyword_parser::{process_keywords, score_text};
+
+
+// Given the link to the school's bulletin,
+// returns a vectory of links to every department's course page
 pub fn course_links(bulletin_link: &str) -> Result<Vec<String>, ureq::Error> {
     let mut out: Vec<String> = Vec::new();
     let mut flag_outer: bool = false;
@@ -49,12 +55,13 @@ pub fn course_links(bulletin_link: &str) -> Result<Vec<String>, ureq::Error> {
 
 
 // Given a link to a department's course page, 
-// pulls (Title, Description) for every course
+// returns a vectory of strings (Title, Description) for every course
 pub fn dept_courses(dept_link: &str) -> Result<Vec<(String, String)>, ureq::Error> {
     let mut out: Vec<(String, String)> = Vec::new();
 
     let mut course_title: Option<String> = None;
     let mut course_descr: Option<String> = None;
+    let mut course_caption: String;
 
     let mut body_iter: Split<char>;
     let mut left_trim: Split<char>;
@@ -66,6 +73,8 @@ pub fn dept_courses(dept_link: &str) -> Result<Vec<(String, String)>, ureq::Erro
         .into_string()?;
     body_iter = body.split('\n');
 
+    println!("{}", dept_link);
+
     let mut line: &str;
     loop {
         line = match body_iter.next() {
@@ -74,26 +83,38 @@ pub fn dept_courses(dept_link: &str) -> Result<Vec<(String, String)>, ureq::Erro
         };
 
         // title located inside "accordion-title" div
-        if line.trim().contains("accordion-title") {
+        if line.trim().contains("caption") {
+            left_trim = line.split('>');
+            left_trim.next();
+            right_trim = left_trim.next().unwrap().split('<');
+
+            course_caption = format!("({}) ", 
+                right_trim.next().unwrap().to_string()
+            );
+
+            line = body_iter.next().unwrap();
+
             left_trim = line.split('>');
             left_trim.next();
             left_trim.next();
-            right_trim = left_trim
-                .next().unwrap()
-                .split('<');
-            course_title = Some(right_trim.next().unwrap().to_string());
+            right_trim = left_trim.next().unwrap().split('<');
+            course_title = Some(course_caption + right_trim.next().unwrap());
+            println!("{}", course_title.clone().unwrap());
         }
 
         // paragraph located just under "card-body" div
         if line.trim().contains("card-body") {
-            left_trim = body_iter
-                .next().unwrap()
-                .split('>');
-            left_trim.next();
-            right_trim = left_trim
-                .next().unwrap()
-                .split('<');
-            course_descr = Some(right_trim.next().unwrap().to_string());
+            line = body_iter.next().unwrap().trim();
+            if !line.contains("<p>") { 
+                course_descr = Some(String::from("(No description given)"));
+            } else {
+                left_trim = line.split('>');
+                left_trim.next();
+                right_trim = left_trim
+                    .next().unwrap()
+                    .split('<');
+                course_descr = Some(right_trim.next().unwrap().to_string());
+            }
         }
 
         // match titles with descriptions
@@ -104,32 +125,32 @@ pub fn dept_courses(dept_link: &str) -> Result<Vec<(String, String)>, ureq::Erro
         }
     }
 
+    println!();
     Ok(out)
 }
 
 
-pub fn course_scores(bulletin_link: &str) -> Result<HashMap<(String, String), u16>, ureq::Error> {
-    let mut out: HashMap<(String, String), u16> = HashMap::new();
+// Given a link to the school's bulletin and the path to a set of keywords,
+// returns a hashmap containing a course's title, description, and score
+pub fn course_scores(bulletin_link: &str, keyword_file_path: &str) -> Result<HashMap<(String, String), u32>, ureq::Error> {
+    let mut out: HashMap<(String, String), u32> = HashMap::new();
+
+    let word_scores: HashMap<String, u32>;
+    let mut score: u32;
+
+    let mut all_courses: Vec<(String, String)> = Vec::new();
     let links: Vec<String> = course_links(bulletin_link).unwrap();
 
+    // gather all courses from all departments
     for link in links {
-        let info: Vec<(String, String)>;
-        let body: String = ureq::get(&link)
-            .set("Example-Header", "header value")
-            .call()?
-            .into_string()?;
-        let mut body_iter = body.split('\n');
-        loop {
+        all_courses.append(&mut dept_courses(&link).unwrap());
+    }
 
-            let line = match body_iter.next() {
-                Some(res) => res,
-                None => break,
-            };
-
-        }
-
+    word_scores = process_keywords(keyword_file_path).unwrap();
+    for (title, description) in all_courses {
+        score = score_text(description.clone(), &word_scores);
+        out.insert((title, description), score);
     }
 
     Ok(out)
 }
-
