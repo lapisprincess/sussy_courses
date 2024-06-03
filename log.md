@@ -14,3 +14,8 @@
 # 6/3/24
 - Wrote function to get course titles and descriptions
     > dept_courses()
+- Wrote function to get score based on chunk of text and keywords
+    > score_text()
+- Connected all the pieces for final product!
+    > course_scores()
+- Conferred with Lexi about project future
