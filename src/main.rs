@@ -1,14 +1,6 @@
 pub mod keyword_parser;
 pub mod webpage_reader;
 
-/*
-fn get_course_data() -> Result<HashMap<String, String, u16>, ureq::Error> {
-
-    Ok()
-}
-*/
-
-
 fn main() {
     /*
     let bulletin_link = "https://www.pugetsound.edu/university-bulletin";

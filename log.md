@@ -8,4 +8,9 @@
 # 5/31/24
 - Decided the PDF sucks, moved to getting info from website (https://www.pugetsound.edu/university-bulletin)
 - Wrote function to get links to department course pages
-    > get_course_links()
+    > course_links()
+
+
+# 6/3/24
+- Wrote function to get course titles and descriptions
+    > dept_courses()
