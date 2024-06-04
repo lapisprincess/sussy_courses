@@ -139,14 +139,23 @@ pub fn course_scores(bulletin_link: &str, keyword_file_path: &str) -> Result<Has
     let mut score: u32;
 
     let mut all_courses: Vec<(String, String)> = Vec::new();
-    let links: Vec<String> = course_links(bulletin_link).unwrap();
+    let links: Vec<String> = match course_links(bulletin_link) {
+        Ok(res) => res,
+        Err(e) => return Err(e),
+    };
 
     // gather all courses from all departments
     for link in links {
         all_courses.append(&mut dept_courses(&link).unwrap());
     }
 
-    word_scores = process_keywords(keyword_file_path).unwrap();
+    word_scores = match process_keywords(keyword_file_path) {
+        Ok(res) => res,
+        Err(_) => {
+            println!("Invalid path for keyword scores!");
+            std::process::exit(1);
+        }
+    };
     for (title, description) in all_courses {
         score = score_text(description.clone(), &word_scores);
         out.insert((title, description), score);
