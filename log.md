@@ -19,3 +19,9 @@
 - Connected all the pieces for final product!
     > course_scores()
 - Conferred with Lexi about project future
+
+
+# 6/4/24
+- Added error handling for unrecognized paths and links
+- Allowed narrowing search by department codes
+- Figured out sorting of results

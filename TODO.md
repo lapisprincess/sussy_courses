@@ -1,5 +1,7 @@
 - [x] get course name and matching description from bulletin
   - [x] pull links to department courses
 - [x] give scores to course descriptions
+- [x] separate classes by department?
+- [ ] have not-exact keywords (human* (humans, humanity))
+  - [ ] regex?
 - [ ] possibly find ways to get syllabi from certain classes
-- [ ] separate classes by department?
