@@ -49,18 +49,9 @@ pub fn process_keywords(path: &str) -> Result<HashMap<String, u32>> {
 // returns a score of how often keywords appear in the text
 pub fn score_text(txt: String, word_scores: &HashMap<String, u32>) -> u32 {
     let mut score: u32 = 0;
-    let mut words: Split<char> = txt.split(' ');
-    let mut word: &str;
 
-    loop {
-        word = match words.next() {
-            Some(res) => res,
-            None => break,
-        };
-
-        for (search_word, search_score) in word_scores {
-            if &word.to_lowercase() == search_word { score += search_score; }
-        }
+    for (search_word, search_score) in word_scores {
+        if txt.to_lowercase().contains(search_word) { score += search_score; }
     }
 
     score
