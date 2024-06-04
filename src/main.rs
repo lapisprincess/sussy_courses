@@ -4,6 +4,8 @@ pub mod keyword_parser;
 pub mod webpage_reader;
 
 
+static BULLETIN_LINK: &str = "https://www.pugetsound.edu/university-bulletin";
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
@@ -19,11 +21,10 @@ fn main() {
 
     let dept_codes: &[String] = &args[2..];
 
-    let bulletin_link: String = String::from("https://www.pugetsound.edu/university-bulletin");
-    let out = match webpage_reader::course_scores(&bulletin_link, keywords_path) {
+    let out = match webpage_reader::course_scores(BULLETIN_LINK, keywords_path) {
         Ok(res) => res,
         Err(_) => {
-            println!("Invalid link to university bulletin! ({})", bulletin_link);
+            println!("Invalid link to university bulletin! ({})", BULLETIN_LINK);
             return;
         }
     };
