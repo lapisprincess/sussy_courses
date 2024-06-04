@@ -2,7 +2,7 @@ use core::str::Split;
 
 use std::collections::HashMap;
 
-use sussy_courses::keyword_parser::{process_keywords, score_text};
+use crate::keyword_parser::{process_keywords, score_text};
 
 
 // Given the link to the school's bulletin,
