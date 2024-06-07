@@ -2,6 +2,11 @@
 name = "sussy_courses"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
+slint = "1.6.0"
 ureq = "2.9.7"
+
+[build-dependencies]
+slint-build = "1.6.0"

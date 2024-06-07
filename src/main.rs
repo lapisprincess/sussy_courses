@@ -1,12 +1,19 @@
 use std::{env, path};
 
+use slint;
+
 pub mod keyword_parser;
 pub mod webpage_reader;
 
 
-static BULLETIN_LINK: &str = "https://www.pugetsound.edu/university-bulletin";
+const BULLETIN_LINK: &str = "https://www.pugetsound.edu/university-bulletin";
+const APP_ID: &str = "org.gtk_rs.CourseRater";
 
+
+slint::include_modules!();
 fn main() {
+    UI::new().unwrap().run().unwrap();
+
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!("Usage: cargo run <path to keywords file> (dept codes)");
@@ -32,6 +39,7 @@ fn main() {
     let mut valid: bool;
     let mut hash_vec: Vec<(&(String, String), &u32)> = out.iter().collect();
     hash_vec.sort_by(|a, b| a.1.cmp(b.1));
+
     for ((title, _), score) in hash_vec {
         valid = false;
         for dept in dept_codes {

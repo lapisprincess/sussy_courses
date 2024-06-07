@@ -1,0 +1,14 @@
+import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
+export component UI {
+    HorizontalBox {
+        Text {
+            text: "Hello, World!";
+        }
+        VerticalBox {
+            Button {
+                text: "Click me!";
+                clicked => { self.text = "Clicked!"; }
+            }
+        }
+    }
+}
