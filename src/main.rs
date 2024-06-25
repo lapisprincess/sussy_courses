@@ -20,7 +20,9 @@ fn main() {
             .unwrap().get_department_codes()
             .iter().collect();
         departments.push("DEPT".into());
-        let departments_model = std::rc::Rc::new(slint::VecModel::from(departments));
+        let departments_model = std::rc::Rc::new(
+            slint::VecModel::from(departments)
+        );
         ui_weak.unwrap().set_department_codes(departments_model.into());
     });
 
@@ -31,7 +33,9 @@ fn main() {
             .unwrap().get_department_codes()
             .iter().collect();
         departments.pop();
-        let departments_model = std::rc::Rc::new(slint::VecModel::from(departments));
+        let departments_model = std::rc::Rc::new(
+            slint::VecModel::from(departments)
+        );
         ui_weak.unwrap().set_department_codes(departments_model.into());
     });
 
