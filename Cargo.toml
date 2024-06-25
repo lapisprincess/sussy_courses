@@ -5,6 +5,8 @@ edition = "2021"
 build = "build.rs"
 
 [dependencies]
+open = "5.1.4"
+rfd = "0.14.1"
 slint = "1.6.0"
 ureq = "2.9.7"
 

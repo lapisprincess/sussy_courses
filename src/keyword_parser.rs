@@ -7,12 +7,17 @@ use std::io::Result;
 // Given a path to a list of keywords with affiliated scores
 // (formatted correctly),
 // returns a hashmap of the keywords with corresponding scores
-pub fn process_keywords(path: &str) -> Result<HashMap<String, u32>> {
-    let mut file: File = File::open(path)?;
+pub fn process_keywords_file(path: &str) -> Result<HashMap<String, u32>> {
     let mut contents: String = String::new();
+    let mut file: File = File::open(path)?;
+    file.read_to_string(&mut contents)?;
+
+    process_keywords(contents.as_str())
+}
+
+pub fn process_keywords(contents: &str) -> Result<HashMap<String, u32>> {
     let mut out: HashMap<String, u32> = HashMap::new();
 
-    file.read_to_string(&mut contents)?;
     let mut lines = contents.split('\n');
 
     loop {
