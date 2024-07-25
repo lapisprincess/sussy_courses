@@ -1,0 +1,158 @@
+import { 
+    LineEdit, TextEdit, 
+    Button, CheckBox, 
+    HorizontalBox, ListView, VerticalBox 
+} from "std-widgets.slint";
+
+import {
+    DepartmentEntry, DepartmentSection
+} from "department.slint";
+
+
+export component LeftPanel {
+    in-out property <int> name; property <string> output;
+    in-out property <string> url: "https://www.pugetsound.edu/university-bulletin";
+    in-out property <bool> narrow_by_dept: true;
+    in-out property <string> keywords;
+    in property <[string]> department_codes: [];
+
+    callback test_url(string);
+    callback load_keywords() -> string;
+    callback run(string, string, bool, [string]);
+
+    VerticalLayout {
+
+        // Header
+        Rectangle {
+            border-radius: 16px;
+            Text {
+                text: "Tilda's Thing!";
+                font-size: 24px;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+
+        Rectangle { height: 16px; }
+        
+        // URL handler
+        Rectangle {
+            border-width: 2px;
+            border-color: black;
+            background: grey;
+            VerticalBox {
+                alignment: center;
+                HorizontalLayout {
+                    Text {
+                        text: "Bulletin URL";
+                        vertical-alignment: center;
+                    }
+                    Button {
+                        text: "Test URL";
+                        clicked => {
+                            root.test_url(root.url);
+                        }
+                    }
+                }
+                LineEdit {
+                    width: 300px;
+                    height: 24px;
+                    text: root.url;
+                    edited => { root.url = self.text; }
+                }
+            }
+        }
+        
+        Rectangle { height: 16px; }
+
+        // Keyword handler
+        Rectangle {
+            border-width: 2px;
+            border-color: black;
+            background: grey;
+            VerticalBox {
+                width: 256px;
+                HorizontalLayout {
+                    Text {
+                        text: "Keywords";
+                        height: 16px;
+                        vertical-alignment: center;
+                    }
+                    Button {
+                        text: "Upload keywords";
+                        clicked => {
+                            root.keywords = "";
+                            root.keywords = root.load_keywords();
+                        }
+                    }
+                }
+                TextEdit { 
+                    width: 256px;
+                    height: 128px;
+                    text: root.keywords;
+                    edited => { root.keywords = self.text; }
+                }
+            }
+        }
+
+        Rectangle { height: 16px; }
+
+        DepartmentSection {
+            department_codes: department_codes;
+        }
+
+        Rectangle { height: 16px; }
+
+        HorizontalBox {
+            alignment: center;
+            Button {
+                text: "Go!";
+                height: 24px;
+                width: 64px;
+                clicked => {
+                    self.text = "Running, please wait...";
+                    root.run(
+                        root.url, root.keywords, 
+                        root.narrow_by_dept, root.department_codes
+                    );
+                }
+            }
+        }
+    }
+}
+
+export component RightPanel {
+    property <string> output;
+    property <string> url: "https://www.pugetsound.edu/university-bulletin";
+    property <bool> narrow_by_dept: true;
+    property <string> keywords;
+    in property <[string]> department_codes: [];
+
+    callback run(string, string, bool, [string]);
+
+    VerticalBox {
+        height: 24px;
+        HorizontalLayout {
+            Text {
+                text: "Output";
+                vertical-alignment: center;
+            }
+            Button {
+                text: "Export";
+                width: 64px;
+                clicked => {
+                    root.run(
+                        root.url, root.keywords, 
+                        root.narrow_by_dept, root.department_codes
+                    );
+                }
+            }
+        }
+        TextEdit {
+            width: 256px;
+            height: 512px;
+            enabled: false;
+            text: root.output;
+        }
+    }
+}

@@ -1,213 +1,27 @@
 import { 
-    LineEdit, TextEdit, 
-    Button, CheckBox, 
-    HorizontalBox, ListView, VerticalBox 
+    HorizontalBox
 } from "std-widgets.slint";
 
-component DepartmentEntry {
-
-    in-out property <string> code;
-    callback edit();
-
-    HorizontalBox {
-        Text { 
-            text: "Dept code"; 
-            vertical-alignment: center;
-        }
-        LineEdit { 
-            text: root.code;
-            height: 20px; 
-            edited => { root.code = self.text; edit(); }
-        }
-    }
-}
+import {
+    LeftPanel, RightPanel
+} from "panels.slint";
 
 
 export component UI inherits Window {
-
     property <string> output;
+    property <string> url: "https://www.pugetsound.edu/university-bulletin";
+    property <bool> narrow_by_dept: true;
+    property <string> keywords;
+    in property <[string]> department_codes: [];
 
     callback test_url(string);
-    property <string> url: "https://www.pugetsound.edu/university-bulletin";
-
     callback load_keywords() -> string;
-    property <string> keywords;
-
     callback add_dept();
     callback sub_dept();
-    in property <[string]> department_codes: [];
-    property <bool> narrow_by_dept: true;
-
     callback run(string, string, bool, [string]);
 
     HorizontalBox {
-        VerticalLayout {
-
-            // Header
-            Rectangle {
-                background: darkcyan;
-                border-radius: 16px;
-                Text {
-                    text: "Tilda's Thing!";
-                    font-size: 24px;
-                    horizontal-alignment: center;
-                    vertical-alignment: center;
-                }
-            }
-
-            Rectangle { height: 16px; }
-            
-            // URL handler
-            Rectangle {
-                border-width: 2px;
-                border-color: black;
-                background: grey;
-                VerticalBox {
-                    alignment: center;
-                    HorizontalLayout {
-                        Text {
-                            text: "Bulletin URL";
-                            vertical-alignment: center;
-                        }
-                        Button {
-                            text: "Test URL";
-                            clicked => {
-                                root.test_url(root.url);
-                            }
-                        }
-                    }
-                    LineEdit {
-                        width: 300px;
-                        height: 24px;
-                        text: root.url;
-                        edited => { root.url = self.text; }
-                    }
-                }
-            }
-            
-            Rectangle { height: 16px; }
-
-            // Keyword handler
-            Rectangle {
-                border-width: 2px;
-                border-color: black;
-                background: grey;
-                VerticalBox {
-                    width: 256px;
-                    HorizontalLayout {
-                        Text {
-                            text: "Keywords";
-                            height: 16px;
-                            vertical-alignment: center;
-                        }
-                        Button {
-                            text: "Upload keywords";
-                            clicked => {
-                                root.keywords = "";
-                                root.keywords = root.load_keywords();
-                            }
-                        }
-                    }
-                    TextEdit { 
-                        width: 256px;
-                        height: 128px;
-                        text: root.keywords;
-                        edited => { root.keywords = self.text; }
-                    }
-                }
-            }
-
-            Rectangle { height: 16px; }
-
-            // Department codes
-            Rectangle {
-                border-width: 2px;
-                border-color: black;
-                background: grey;
-                VerticalBox {
-                    HorizontalLayout {
-                        HorizontalLayout {
-                            alignment: start;
-                            Text {
-                                text: "Narrow by department:";
-                                vertical-alignment: center;
-                            }
-                            CheckBox { 
-                                checked: root.narrow_by_dept;
-                            }
-                        }
-                    }
-                    ListView {
-                        height: 128px;
-                        for entry in department_codes: DepartmentEntry { 
-                            code: entry; 
-                            edit => { entry = self.code; }
-                        }
-                    }
-                    HorizontalLayout {
-                        Button {
-                            text: "Add department";
-                            height: 24px;
-                            clicked => {
-                                root.add_dept();
-                            }
-                        }
-                        Rectangle { width: 16px; }
-                        Button {
-                            text: "Remove department";
-                            height: 24px;
-                            clicked => {
-                                root.sub_dept();
-                            }
-                        }
-                    }
-                }
-            }
-
-            Rectangle { height: 16px; }
-
-            HorizontalBox {
-                alignment: center;
-                Button {
-                    text: "Go!";
-                    height: 24px;
-                    width: 64px;
-                    clicked => {
-                        self.text = "Running, please wait...";
-                        root.run(
-                            root.url, root.keywords, 
-                            root.narrow_by_dept, root.department_codes
-                        );
-                    }
-                }
-            }
-        }
-
-
-        VerticalBox {
-            height: 24px;
-            HorizontalLayout {
-                Text {
-                    text: "Output";
-                    vertical-alignment: center;
-                }
-                Button {
-                    text: "Export";
-                    width: 64px;
-                    clicked => {
-                        root.run(
-                            root.url, root.keywords, 
-                            root.narrow_by_dept, root.department_codes
-                        );
-                    }
-                }
-            }
-            TextEdit {
-                width: 256px;
-                height: 512px;
-                enabled: false;
-                text: root.output;
-            }
-        }
+        LeftPanel {}
+        RightPanel {}
     }
 }

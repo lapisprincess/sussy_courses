@@ -1,0 +1,76 @@
+import { 
+    LineEdit, TextEdit, 
+    Button, CheckBox, 
+    HorizontalBox, ListView, VerticalBox 
+} from "std-widgets.slint";
+
+
+export component DepartmentEntry {
+
+    in-out property <string> code;
+    callback edit();
+
+    HorizontalBox {
+        Text { 
+            text: "Dept code"; 
+            vertical-alignment: center;
+        }
+        LineEdit { 
+            text: root.code;
+            height: 20px; 
+            edited => { root.code = self.text; edit(); }
+        }
+    }
+}
+
+
+export component DepartmentSection {
+    callback add_dept();
+    callback sub_dept();
+    in property <[string]> department_codes: [];
+    property <bool> narrow_by_dept: true;
+
+    Rectangle {
+        border-width: 2px;
+        border-color: black;
+        background: grey;
+        VerticalBox {
+            HorizontalLayout {
+                HorizontalLayout {
+                    alignment: start;
+                    Text {
+                        text: "Narrow by department:";
+                        vertical-alignment: center;
+                    }
+                    CheckBox { 
+                        checked: root.narrow_by_dept;
+                    }
+                }
+            }
+            ListView {
+                height: 128px;
+                for entry in department_codes: DepartmentEntry { 
+                    code: entry; 
+                    edit => { entry = self.code; }
+                }
+            }
+            HorizontalLayout {
+                Button {
+                    text: "Add department";
+                    height: 24px;
+                    clicked => {
+                        root.add_dept();
+                    }
+                }
+                Rectangle { width: 16px; }
+                Button {
+                    text: "Remove department";
+                    height: 24px;
+                    clicked => {
+                        root.sub_dept();
+                    }
+                }
+            }
+        }
+    }
+}
